@@ -1,6 +1,7 @@
 from django.db import models
-from django.core.validators import RegexValidator, EmailValidator
+from django.core.validators import RegexValidator
 from django.contrib.auth import get_user_model
+from django.utils.translation import gettext_lazy as _
 
 User = get_user_model()
 
@@ -24,10 +25,19 @@ class Customer(models.Model):
         ]
     )
     email = models.EmailField(
-        max_length=200,
+        _('Email'),
+        max_length=150,
+        unique=True,
+        help_text=_('Enter email in format example@gmail.ru'),
         validators=[
-            EmailValidator(),
-        ]
+            RegexValidator(
+                regex="^([A-Za-z0-9]{1}[-!#$%&'*+./=?^_`{}|~A-Za-z0-9]{1,63})@([A-za-z0-9]{1,}\.){1,2}(?=.*[a-z])[a-z0-9]{2,63}$",
+                message=_('Invalid email'),
+                code=_('invalid_email')
+            ),
+        ], error_messages={
+            "unique": _("The email has been already registered. Try another one.")
+        }
     )
 
     def __str__(self):
