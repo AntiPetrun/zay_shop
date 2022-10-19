@@ -1,14 +1,12 @@
 from django.db import models
 from django.contrib.auth import get_user_model
 
-from src.catalog.models import Product
-
 User = get_user_model()
 
 
 class Comment(models.Model):
     product = models.ForeignKey(
-        Product,
+        'catalog.Product',
         on_delete=models.CASCADE,
         related_name='comments'
     )

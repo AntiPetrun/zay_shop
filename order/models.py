@@ -2,16 +2,12 @@ from django.utils.translation import gettext_lazy as _
 from django.db import models
 from django.contrib.auth import get_user_model
 
-from src.catalog.models import Product
-from src.customer.models import AddressInfo, Customer
-
 User = get_user_model()
 
 
 class OrderStatus(models.Model):
     order = models.ForeignKey(
         'Order',
-        _('Order Status'),
         on_delete=models.PROTECT,
         related_name='orders',
     )
@@ -21,7 +17,6 @@ class OrderStatus(models.Model):
         ('c', 'Canceled')
     )
     status = models.CharField(
-        _('Status'),
         choices=STATUS_CHOICES,
         max_length=64,
         default='o'
@@ -31,34 +26,23 @@ class OrderStatus(models.Model):
         return self.status
 
     class Meta:
-        db_table = 'order_status'
+        db_table = 'order_orders_status'
         verbose_name = _('Status')
         verbose_name_plural = _('Status')
         ordering = ('status',)
 
 
-class Order(models.Model):
+class Basket(models.Model):
     customer = models.ForeignKey(
-        Customer,
-        _('Customer'),
+        User,
         on_delete=models.SET_NULL,
-        null=True,
-        related_name='customers'
+        null=True
     )
-    status = models.ForeignKey(
-        'orders.Status',
-        _('Order Status'),
-        on_delete=models.DO_NOTHING,
-        related_name='status',
-    )
-    delivery_address = models.ForeignKey(
-        AddressInfo,
-        _('Delivery Address Information'),
-        on_delete=models.CASCADE,
-        related_name='addresses',
-    )
-    created_date = models.DateTimeField(
+    created_date = models.DateField(
         auto_now_add=True
+    )
+    updated_date = models.DateField(
+        auto_now=True
     )
 
     @property
@@ -69,43 +53,73 @@ class Order(models.Model):
         return total
 
     def __str__(self):
-        return f'{self.pk}: {self.customer}, {self.created_date},' \
-               f'{self.status}, {self.total_amount}, {self.delivery_address}'
+        return f'Customer: {self.customer}'
+
+
+class Order(models.Model):
+    basket = models.ForeignKey(
+        Basket,
+        on_delete=models.CASCADE,
+        null=True,
+        related_name='baskets'
+    )
+    order_status = models.ForeignKey(
+        OrderStatus,
+        on_delete=models.DO_NOTHING,
+        related_name='order_status',
+    )
+    delivery_address = models.ForeignKey(
+        'customer.AddressInfo',
+        on_delete=models.CASCADE,
+        related_name='addresses',
+    )
+    created_date = models.DateTimeField(
+        auto_now_add=True
+    )
+    updated_date = models.DateTimeField(
+        auto_now=True
+    )
+
+    def __str__(self):
+        return f'{self.pk}: {self.bascket.customer},' \
+               f'{self.basket.total_amount}, {self.order_status}'
 
     class Meta:
         db_table = 'order_orders'
         verbose_name = _('order')
         verbose_name_plural = _('orders')
-        ordering = ('-created_date', 'order')
+        ordering = ('-created_date', 'order_status')
 
 
 class OrderItem(models.Model):
+    basket = models.ForeignKey(
+        Basket,
+        on_delete=models.SET_NULL,
+        related_name='carts',
+        null=True
+    )
     order = models.ForeignKey(
         Order,
         on_delete=models.CASCADE,
-        related_name='orders'
+        related_name='goods'
     )
-    product = models.ForeignKey(
-        Product,
-        _('product'),
-        on_delete=models.CASCADE,
+    products = models.ManyToManyField(
+        'catalog.Product',
         related_name='products'
     )
-
-    @property
-    def get_price(self, product_pk):
-        price = 0
-        for product in self.products.filter(pk=product_pk):
-            price = product.price
-        return price
-
-    @property
-    def get_quant(self, product_pk):
-        quant = 0
-        for product in self.products.filter(pk=product_pk):
-            quant = product.quantity
-        return quant
+    quantity = models.PositiveSmallIntegerField(
+        verbose_name='Quantity'
+    )
+    price = models.DecimalField(
+        max_digits=8,
+        decimal_places=2,
+    )
 
     def __str__(self):
-        return f'{self.pk}: {self.order}, {self.product},' \
-               f'{self.get_quant}, {self.get_price}'
+        return f'{self.basket}: {self.order},' \
+               f'{self.quantity}, {self.price}'
+
+    class Meta:
+        db_table = 'order_order_items'
+        verbose_name = _('order item')
+        verbose_name_plural = _('order items')
