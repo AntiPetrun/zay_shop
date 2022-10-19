@@ -14,7 +14,6 @@ class Customer(models.Model):
         max_length=32
     )
     phone = models.IntegerField(
-        max_length=10,
         unique=True,
         validators=[
             RegexValidator(
@@ -28,7 +27,7 @@ class Customer(models.Model):
         _('Email'),
         max_length=150,
         unique=True,
-        help_text=_('Enter email in format example@gmail.ru'),
+        help_text=_('Enter email in format example@gmail.com'),
         validators=[
             RegexValidator(
                 regex="^([A-Za-z0-9]{1}[-!#$%&'*+./=?^_`{}|~A-Za-z0-9]{1,63})@([A-za-z0-9]{1,}\.){1,2}(?=.*[a-z])[a-z0-9]{2,63}$",

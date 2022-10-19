@@ -1,5 +1,4 @@
 from django.db import models
-from ..cookbook.models import Color, Brand, Size
 
 
 class Category(models.Model):
@@ -59,7 +58,7 @@ class Product(models.Model):
         blank=True
     )
     brand = models.ForeignKey(
-        Brand,
+        'cookbook.Brand',
         on_delete=models.PROTECT,
     )
     description = models.TextField(
@@ -67,7 +66,7 @@ class Product(models.Model):
         null=True
     )
     color = models.ForeignKey(
-        Color,
+        'cookbook.Color',
         on_delete=models.PROTECT,
         related_name="colors"
     )
@@ -75,7 +74,7 @@ class Product(models.Model):
         max_length=255
     )
     size = models.ManyToManyField(
-        Size,
+        'cookbook.Size',
         related_name="sizes"
     )
     quantity = models.PositiveSmallIntegerField(
