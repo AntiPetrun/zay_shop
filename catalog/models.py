@@ -1,19 +1,35 @@
+import uuid
+
 from django.db import models
+from django.urls import reverse
 
 
 class Category(models.Model):
     title = models.CharField(
         max_length=32
     )
-    description = models.TextField()
+    description = models.TextField(
+        blank=True,
+        null=True
+    )
     parent = models.ForeignKey(
         'self',
         on_delete=models.PROTECT,
+        default=None,
         related_name='subcategories'
     )
     is_published = models.BooleanField(
         default=False
     )
+    slug = models.SlugField(
+        unique=True
+    )
+
+    def get_absolute_url(self):
+        return reverse(
+            'catalog:category_detail',
+            kwargs={'category_slug': self.slug}
+        )
 
     def __str__(self):
         return self.title
@@ -22,10 +38,14 @@ class Category(models.Model):
         db_table = 'catalog_categories'
         verbose_name = 'category'
         verbose_name_plural = 'categories'
-        ordering = ('title',)
+        ordering = ('title', 'is_published')
 
 
 class Product(models.Model):
+    article = models.UUIDField(
+        primary_key=True,
+        default=uuid.uuid4,
+    )
     category = models.ForeignKey(
         Category,
         on_delete=models.PROTECT,
@@ -41,7 +61,7 @@ class Product(models.Model):
         verbose_name='title'
     )
     price = models.DecimalField(
-        max_digits=10,
+        max_digits=6,
         decimal_places=2,
     )
     RATINGS = (
@@ -55,7 +75,8 @@ class Product(models.Model):
     rating = models.CharField(
         max_length=1,
         choices=RATINGS,
-        blank=True
+        blank=True,
+        default=None
     )
     brand = models.ForeignKey(
         'cookbook.Brand',
@@ -65,9 +86,8 @@ class Product(models.Model):
         blank=True,
         null=True
     )
-    color = models.ForeignKey(
+    color = models.ManyToManyField(
         'cookbook.Color',
-        on_delete=models.PROTECT,
         related_name="colors"
     )
     specification = models.CharField(
@@ -76,9 +96,6 @@ class Product(models.Model):
     size = models.ManyToManyField(
         'cookbook.Size',
         related_name="sizes"
-    )
-    quantity = models.PositiveSmallIntegerField(
-        default=1
     )
     date_created = models.DateField(
         auto_now_add=True,
@@ -89,6 +106,25 @@ class Product(models.Model):
     is_published = models.BooleanField(
         default=False
     )
+    slug = models.SlugField(
+        unique=True
+    )
+
+    def display_color(self):
+        return ', '.join([color.name for color in self.color.all()])
+
+    display_color.short_description = 'Color'
+
+    def display_size(self):
+        return ', '.join([size.name for size in self.size.all()])
+
+    display_size.short_description = 'Size'
+
+    def get_absolute_url(self):
+        return reverse(
+            'catalog:product_detail',
+            kwargs={'prod_slug': self.slug}
+        )
 
     def __str__(self):
         return self.title
@@ -97,4 +133,4 @@ class Product(models.Model):
         db_table = 'catalog_products'
         verbose_name = 'product'
         verbose_name_plural = 'products'
-        ordering = ('title', 'is_published',)
+        ordering = ('title', 'is_published')

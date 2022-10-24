@@ -50,3 +50,4 @@ class Size(models.Model):
         db_table = 'cookbook_sizes'
         verbose_name = 'size'
         verbose_name_plural = 'sizes'
+        ordering = ('name',)

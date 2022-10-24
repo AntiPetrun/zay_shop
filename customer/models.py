@@ -24,7 +24,6 @@ class Customer(models.Model):
         ]
     )
     email = models.EmailField(
-        _('Email'),
         max_length=150,
         unique=True,
         help_text=_('Enter email in format example@gmail.com'),
@@ -44,8 +43,8 @@ class Customer(models.Model):
 
     class Meta:
         db_table = 'customer_customers'
-        verbose_name = 'email'
-        verbose_name_plural = 'emails'
+        verbose_name = 'customer'
+        verbose_name_plural = 'customers'
         ordering = ('last_name', 'first_name')
 
 
