@@ -1,3 +1,5 @@
+import uuid
+
 from django.utils.translation import gettext_lazy as _
 from django.db import models
 from django.contrib.auth import get_user_model
@@ -57,6 +59,10 @@ class Basket(models.Model):
 
 
 class Order(models.Model):
+    id = models.UUIDField(
+        primary_key=True,
+        default=uuid.uuid4
+    )
     basket = models.ForeignKey(
         Basket,
         on_delete=models.CASCADE,
@@ -78,6 +84,9 @@ class Order(models.Model):
     )
     updated_date = models.DateTimeField(
         auto_now=True
+    )
+    is_paid = models.BooleanField(
+        default=False
     )
 
     def __str__(self):
@@ -103,7 +112,7 @@ class OrderItem(models.Model):
         on_delete=models.CASCADE,
         related_name='goods'
     )
-    products = models.ManyToManyField(
+    product = models.ManyToManyField(
         'catalog.Product',
         related_name='products'
     )
@@ -114,6 +123,11 @@ class OrderItem(models.Model):
         max_digits=8,
         decimal_places=2,
     )
+
+    def display_product(self):
+        return ', '.join([product.title for product in self.product.all()])
+
+    display_product.short_description = 'Product'
 
     def __str__(self):
         return f'{self.basket}: {self.order},' \
