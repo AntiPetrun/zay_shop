@@ -17,6 +17,8 @@
     <!-- Load fonts style after rendering the layout styles -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;200;300;400;500;700;900&display=swap">
     <link rel="stylesheet" href="{% static 'css/fontawesome.min.css' %}">
+
+    {% block additional %}{% endblock %}
 <!--
     
 TemplateMo 559 Zay Shop
@@ -27,10 +29,11 @@ https://templatemo.com/tm-559-zay-shop
 </head>
 
 <body>
-    {% include 'homepage/top_navbar.html' %}
-    {% include 'homepage/header.html' %}
+    {% include 'homepage/comp_navbar.html' %}
+    {% include 'homepage/comp_header.html' %}
+    {% include 'homepage/comp_modal.html' %}
     {% block content %}{% endblock %}
-    {% include 'homepage/footer.html' %}
+    {% include 'homepage/comp_footer.html' %}
 
     <!-- Start Script -->
     <script src="{% static 'js/jquery-1.11.0.min.js' %}"></script>
@@ -38,6 +41,9 @@ https://templatemo.com/tm-559-zay-shop
     <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
     <script src="{% static 'js/templatemo.js' %}"></script>
     <script src="{% static 'js/custom.js' %}"></script>
+
+    {% block slide %}{% endblock %}
+
     <!-- End Script -->
 </body>
 
