@@ -29,7 +29,7 @@ class Customer(models.Model):
         help_text=_('Enter email in format example@gmail.com'),
         validators=[
             RegexValidator(
-                regex="^([A-Za-z0-9]{1}[-!#$%&'*+./=?^_`{}|~A-Za-z0-9]{1,63})@([A-za-z0-9]{1,}\.){1,2}(?=.*[a-z])[a-z0-9]{2,63}$",
+                regex="^[A-Z0-9._%+-]+@[A-Z0-9-]+.+.[A-Z]{2,4}$",
                 message=_('Invalid email'),
                 code=_('invalid_email')
             ),
@@ -79,3 +79,28 @@ class AddressInfo(models.Model):
         verbose_name = 'address'
         verbose_name_plural = 'addresses'
         ordering = ('city',)
+
+
+class Feedback(models.Model):
+    name = models.CharField(
+        max_length=64
+    )
+    email = models.EmailField()
+    subject = models.CharField(
+        max_length=64
+    )
+    message = models.TextField()
+    date_created = models.DateTimeField(
+        auto_now_add=True,
+        blank=True
+    )
+
+    def __str__(self):
+        return self.email
+
+    class Meta:
+        db_table = 'customer_feedbacks'
+        verbose_name = _('feedback')
+        verbose_name_plural = _('feedbacks')
+        ordering = ('date_created',)
+
