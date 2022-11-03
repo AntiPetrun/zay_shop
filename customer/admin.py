@@ -7,6 +7,7 @@ from .models import Customer, AddressInfo, Feedback
 class CustomerAdmin(admin.ModelAdmin):
     empty_value_display = 'no data'
     list_display = (
+        'customer',
         'last_name',
         'first_name',
         'phone',

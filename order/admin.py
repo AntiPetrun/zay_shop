@@ -54,10 +54,10 @@ class OrderItemAdmin(admin.ModelAdmin):
     list_display = (
         'basket',
         'order',
-        'display_product',
+        'display_products',
         'quantity',
         'price',
     )
     list_filter = ('price',)
-    search_fields = ('display_product',)
+    search_fields = ('display_products',)
     search_help_text = 'Enter product title for search'

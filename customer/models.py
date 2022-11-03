@@ -7,6 +7,10 @@ User = get_user_model()
 
 
 class Customer(models.Model):
+    customer = models.ForeignKey(
+        User,
+        on_delete=models.DO_NOTHING
+    )
     first_name = models.CharField(
         max_length=16
     )
@@ -25,16 +29,15 @@ class Customer(models.Model):
     )
     email = models.EmailField(
         max_length=150,
-        unique=True,
         help_text=_('Enter email in format example@gmail.com'),
         validators=[
             RegexValidator(
-                regex="^[A-Z0-9._%+-]+@[A-Z0-9-]+.+.[A-Z]{2,4}$",
+                regex="^[-\w\.]+@([-\w]+\.)+[-\w]{2,4}$",
                 message=_('Invalid email'),
                 code=_('invalid_email')
             ),
         ], error_messages={
-            "unique": _("The email has been already registered. Try another one.")
+            "unique": _("Please, enter correct email!.")
         }
     )
 
@@ -85,7 +88,19 @@ class Feedback(models.Model):
     name = models.CharField(
         max_length=64
     )
-    email = models.EmailField()
+    email = models.EmailField(
+        max_length=150,
+        help_text=_('Enter email in format example@gmail.com'),
+        validators=[
+            RegexValidator(
+                regex="^[-\w\.]+@([-\w]+\.)+[-\w]{2,4}$",
+                message=_('Invalid email'),
+                code=_('invalid_email')
+            ),
+        ], error_messages={
+            "unique": _("Please, enter correct email!.")
+        }
+    )
     subject = models.CharField(
         max_length=64
     )
