@@ -28,7 +28,7 @@ class Category(models.Model):
     def get_absolute_url(self):
         return reverse(
             'catalog:category_detail',
-            kwargs={'category_slug': self.slug}
+            kwargs={'cat_slug': self.slug}
         )
 
     def __str__(self):
@@ -51,7 +51,7 @@ class Product(models.Model):
         on_delete=models.PROTECT,
         blank=True,
         limit_choices_to={'is_published': True},
-        related_name='categories'
+        related_name='products'
     )
     image = models.ImageField(
         upload_to='products'
@@ -81,21 +81,22 @@ class Product(models.Model):
     brand = models.ForeignKey(
         'cookbook.Brand',
         on_delete=models.PROTECT,
+        related_name='products'
     )
     description = models.TextField(
         blank=True,
         null=True
     )
-    color = models.ManyToManyField(
+    colors = models.ManyToManyField(
         'cookbook.Color',
-        related_name="colors"
+        related_name="products"
     )
     specification = models.CharField(
         max_length=255
     )
-    size = models.ManyToManyField(
+    sizes = models.ManyToManyField(
         'cookbook.Size',
-        related_name="sizes"
+        related_name="products"
     )
     date_created = models.DateField(
         auto_now_add=True,
@@ -110,15 +111,15 @@ class Product(models.Model):
         unique=True
     )
 
-    def display_color(self):
-        return ', '.join([color.name for color in self.color.all()])
+    def display_colors(self):
+        return ', '.join([color.name for color in self.colors.all()])
 
-    display_color.short_description = 'Color'
+    display_colors.short_description = 'Colors'
 
-    def display_size(self):
-        return ', '.join([size.name for size in self.size.all()])
+    def display_sizes(self):
+        return ', '.join([size.name for size in self.sizes.all()])
 
-    display_size.short_description = 'Size'
+    display_sizes.short_description = 'Sizes'
 
     def get_absolute_url(self):
         return reverse(

@@ -43,8 +43,8 @@ class ProductAdmin(admin.ModelAdmin):
         'price',
         'rating',
         'brand',
-        'display_color',
-        'display_size',
+        'display_colors',
+        'display_sizes',
         'is_published'
     )
     list_filter = ('category', 'brand', 'rating', 'is_published')
@@ -56,7 +56,7 @@ class ProductAdmin(admin.ModelAdmin):
             'fields': ('article', 'category', 'image', 'title', 'price', 'rating')
         }),
         ('Additional settings', {
-            'fields': ('brand', 'description', 'color', 'specification', 'size',
+            'fields': ('brand', 'description', 'colors', 'specification', 'sizes',
                        'date_created', 'date_published', 'is_published', 'slug')
         })
     )

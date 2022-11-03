@@ -3,6 +3,7 @@ import uuid
 from django.utils.translation import gettext_lazy as _
 from django.db import models
 from django.contrib.auth import get_user_model
+from django.urls import reverse
 
 User = get_user_model()
 
@@ -11,7 +12,7 @@ class OrderStatus(models.Model):
     order = models.ForeignKey(
         'Order',
         on_delete=models.PROTECT,
-        related_name='orders',
+        related_name='status',
     )
     STATUS_CHOICES = (
         ('o', 'Open'),
@@ -67,17 +68,17 @@ class Order(models.Model):
         Basket,
         on_delete=models.CASCADE,
         null=True,
-        related_name='baskets'
+        related_name='orders'
     )
     order_status = models.ForeignKey(
         OrderStatus,
         on_delete=models.DO_NOTHING,
-        related_name='order_status',
+        related_name='orders',
     )
     delivery_address = models.ForeignKey(
         'customer.AddressInfo',
         on_delete=models.CASCADE,
-        related_name='addresses',
+        related_name='orders',
     )
     created_date = models.DateTimeField(
         auto_now_add=True
@@ -93,6 +94,12 @@ class Order(models.Model):
         return f'{self.pk}: {self.bascket.customer},' \
                f'{self.basket.total_amount}, {self.order_status}'
 
+    def get_absolute_url(self):
+        return reverse(
+            'customer:order_detail',
+            kwargs={'order_pk': self.pk}
+        )
+
     class Meta:
         db_table = 'order_orders'
         verbose_name = _('order')
@@ -104,17 +111,17 @@ class OrderItem(models.Model):
     basket = models.ForeignKey(
         Basket,
         on_delete=models.SET_NULL,
-        related_name='carts',
+        related_name='order_items',
         null=True
     )
     order = models.ForeignKey(
         Order,
         on_delete=models.CASCADE,
-        related_name='goods'
+        related_name='order_items'
     )
-    product = models.ManyToManyField(
+    products = models.ManyToManyField(
         'catalog.Product',
-        related_name='products'
+        related_name='order_items'
     )
     quantity = models.PositiveSmallIntegerField(
         verbose_name='Quantity'
@@ -124,10 +131,10 @@ class OrderItem(models.Model):
         decimal_places=2,
     )
 
-    def display_product(self):
-        return ', '.join([product.title for product in self.product.all()])
+    def display_products(self):
+        return ', '.join([product.title for product in self.products.all()])
 
-    display_product.short_description = 'Product'
+    display_products.short_description = 'Products'
 
     def __str__(self):
         return f'{self.basket}: {self.order},' \

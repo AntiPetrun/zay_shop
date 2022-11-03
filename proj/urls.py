@@ -22,12 +22,12 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('catalog/', include('catalog.urls')),
-    path('comment/', include('comment.urls')),
-    path('cookbook/', include('cookbook.urls')),
-    path('customer/', include('customer.urls')),
-    path('', include('homepage.urls')),
-    path('order/', include('order.urls')),
+    path('catalog/', include('catalog.urls', namespace='catalog')),
+    path('comment/', include('comment.urls', namespace='comment')),
+    path('cookbook/', include('cookbook.urls', namespace='cookbook')),
+    path('customer/', include('customer.urls', namespace='customer')),
+    path('', include('homepage.urls', namespace='hone')),
+    path('order/', include('order.urls', namespace='order')),
 ]
 
 if settings.DEBUG:
