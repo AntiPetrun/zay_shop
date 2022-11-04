@@ -1,21 +1,20 @@
-from django.shortcuts import render
 from django.http import HttpRequest
 from .forms import FeedbackForm
 from homepage.views import ContextMixin
+from django.views.generic import TemplateView
 
 
-def index(request: HttpRequest):
-    context = ContextMixin.context
-    error = None
-    if request.method == 'POST':
+class ContactTemplateView(ContextMixin, TemplateView):
+    template_name = 'customer/contact.html'
+
+    def get_context_data(self):
+        context = super(ContactTemplateView, self).get_context_data()
+        context.update(self.context)
+        context['feedback_form'] = FeedbackForm()
+        return context
+
+    def post(self, request: HttpRequest, *args, **kwargs):
         form = FeedbackForm(request.POST)
         if form.is_valid():
             form.save()
-        else:
-            error = 'Error'
-    form = FeedbackForm()
-    context.update({
-        'feedback_form': form,
-        'feedback_error': error
-    })
-    return render(request, 'customer/contact.html', context)
+        return self.get(request, *args, **kwargs)
