@@ -1,4 +1,5 @@
 from django.db import models
+from django.urls import reverse
 
 
 class Brand(models.Model):
@@ -9,9 +10,18 @@ class Brand(models.Model):
     image = models.ImageField(
         upload_to='brands'
     )
+    slug = models.SlugField(
+        unique=True
+    )
 
     def __str__(self):
         return self.name
+
+    def get_absolute_url(self):
+        return reverse(
+            'cookbook:brand_detail',
+            kwargs={'brand_slug': self.slug}
+        )
 
     class Meta:
         db_table = 'cookbook_brands'

@@ -10,6 +10,9 @@ class BrandAdmin(admin.ModelAdmin):
     list_filter = ('name',)
     search_fields = ('name',)
     search_help_text = 'Enter brand name for search'
+    prepopulated_fields = {
+        'slug': ('name',)
+    }
 
 
 @admin.register(Color)

@@ -7,6 +7,10 @@ User = get_user_model()
 
 
 class Customer(models.Model):
+    customer = models.ForeignKey(
+        User,
+        on_delete=models.DO_NOTHING
+    )
     first_name = models.CharField(
         max_length=16
     )
@@ -25,16 +29,15 @@ class Customer(models.Model):
     )
     email = models.EmailField(
         max_length=150,
-        unique=True,
         help_text=_('Enter email in format example@gmail.com'),
         validators=[
             RegexValidator(
-                regex="^([A-Za-z0-9]{1}[-!#$%&'*+./=?^_`{}|~A-Za-z0-9]{1,63})@([A-za-z0-9]{1,}\.){1,2}(?=.*[a-z])[a-z0-9]{2,63}$",
+                regex="^[-\w\.]+@([-\w]+\.)+[-\w]{2,4}$",
                 message=_('Invalid email'),
                 code=_('invalid_email')
             ),
         ], error_messages={
-            "unique": _("The email has been already registered. Try another one.")
+            "unique": _("Please, enter correct email!.")
         }
     )
 
@@ -79,3 +82,40 @@ class AddressInfo(models.Model):
         verbose_name = 'address'
         verbose_name_plural = 'addresses'
         ordering = ('city',)
+
+
+class Feedback(models.Model):
+    name = models.CharField(
+        max_length=64
+    )
+    email = models.EmailField(
+        max_length=150,
+        help_text=_('Enter email in format example@gmail.com'),
+        validators=[
+            RegexValidator(
+                regex="^[-\w\.]+@([-\w]+\.)+[-\w]{2,4}$",
+                message=_('Invalid email'),
+                code=_('invalid_email')
+            ),
+        ], error_messages={
+            "unique": _("Please, enter correct email!.")
+        }
+    )
+    subject = models.CharField(
+        max_length=64
+    )
+    message = models.TextField()
+    date_created = models.DateTimeField(
+        auto_now_add=True,
+        blank=True
+    )
+
+    def __str__(self):
+        return self.email
+
+    class Meta:
+        db_table = 'customer_feedbacks'
+        verbose_name = _('feedback')
+        verbose_name_plural = _('feedbacks')
+        ordering = ('date_created',)
+
