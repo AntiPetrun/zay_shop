@@ -1,8 +1,8 @@
 from django.urls import path
-from .views import index
+from .views import ContactTemplateView
 
 app_name = 'customer'
 
 urlpatterns = [
-    path('', index, name='contact'),
+    path('', ContactTemplateView.as_view(), name='contact'),
 ]

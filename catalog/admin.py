@@ -30,6 +30,9 @@ class CategoryAdmin(admin.ModelAdmin):
     search_fields = ('title', 'id')
     search_help_text = 'Enter title or id for search'
     inlines = (ProductTabularInline, )
+    prepopulated_fields = {
+        'slug': ('title', )
+    }
 
 
 @admin.register(Product)
