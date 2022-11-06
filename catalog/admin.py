@@ -19,7 +19,7 @@ class ProductTabularInline(admin.TabularInline):
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
     actions = (make_published, make_unpublished)
-    empty_value_display = 'no data'
+    empty_value_display = 'main category'
     list_display = (
         'title',
         'parent',
@@ -33,12 +33,13 @@ class CategoryAdmin(admin.ModelAdmin):
     prepopulated_fields = {
         'slug': ('title', )
     }
+    list_editable = ('is_published',)
 
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
     actions = (make_published, make_unpublished)
-    empty_value_display = 'no data'
+    empty_value_display = 'auto field'
     list_display = (
         'article',
         'title',
@@ -46,24 +47,25 @@ class ProductAdmin(admin.ModelAdmin):
         'price',
         'rating',
         'brand',
+        'gender',
         'display_colors',
         'display_sizes',
         'is_published'
     )
-    list_filter = ('category', 'brand', 'rating', 'is_published')
-    search_fields = ('title', 'brand')
+    list_filter = ('category', 'brand', 'rating', 'gender', 'is_published')
+    search_fields = ('title', 'brand', 'gender')
     search_help_text = 'Enter title and brand for search'
     date_hierarchy = 'date_published'
     fieldsets = (
         ('Main settings', {
-            'fields': ('article', 'category', 'image', 'title', 'price', 'rating')
+            'fields': ('article', 'category', 'image', 'title', 'price', 'rating', 'brand', 'gender')
         }),
         ('Additional settings', {
-            'fields': ('brand', 'description', 'colors', 'specification', 'sizes',
+            'fields': ('description', 'colors', 'specification', 'sizes',
                        'date_created', 'date_published', 'is_published', 'slug')
         })
     )
-    list_editable = ('category', 'is_published', 'price')
+    list_editable = ('rating', 'gender', 'category', 'is_published', 'price')
     prepopulated_fields = {
         'slug': ('title', 'category',)
     }
