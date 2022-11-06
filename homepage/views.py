@@ -1,5 +1,7 @@
-from django.shortcuts import render
-from django.http import HttpRequest
+from django.views.generic import TemplateView
+from catalog.models import Product, Category
+from .models import Banner
+from django.db.models import Q
 
 
 class ContextMixin:
@@ -16,10 +18,32 @@ class ContextMixin:
         'instagram': 'https://www.instagram.com/',
         'twitter': 'https://twitter.com',
         'linkedin': 'https://www.linkedin.com/',
-        'designed_by': 'https://templatemo.com/',
+        'footer_nav_col1': 'Zay Shop',
+        'footer_nav_col2': 'Products',
+        'footer_nav_col3': 'Further Info',
     }
 
 
-def index(request: HttpRequest):
+class HomeMixin(ContextMixin):
     context = ContextMixin.context
-    return render(request, 'homepage/index.html', context=context)
+    context.update({
+        'cat_blog': 'Categories of The Month',
+        'featured_prod_blog': 'Featured Product',
+    })
+
+
+class HomeTemplateView(HomeMixin, TemplateView):
+    template_name = 'homepage/index.html'
+    model = Product
+    context_object_name = 'products'
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super(HomeTemplateView, self).get_context_data()
+        context.update(self.context)
+        context['categories'] = Category.objects.filter(
+            Q(title__iexact="watches") |
+            Q(title__iexact="casual shoes") |
+            Q(title__iexact="sunglass")
+        )
+        context['banners'] = Banner.objects.all()
+        return context

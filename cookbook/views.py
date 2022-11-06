@@ -1,6 +1,7 @@
 from django.views.generic import ListView
 from .models import Brand
 from homepage.views import ContextMixin
+from catalog.models import Category
 
 
 class AboutMixin(ContextMixin):
@@ -8,6 +9,10 @@ class AboutMixin(ContextMixin):
     context.update({
         'blog_service': 'Our Services',
         'blog_brands': 'Our Brands',
+        'delivery': 'Delivery Services',
+        'conditions': 'Shipping & Return',
+        'promotion': 'Promotion',
+        'call_center': '24 Hours Service',
     })
 
 
@@ -19,4 +24,5 @@ class BrandListView(AboutMixin, ListView):
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super(BrandListView, self).get_context_data()
         context.update(self.context)
+        context['categories'] = Category.objects.all()
         return context

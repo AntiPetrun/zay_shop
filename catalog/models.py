@@ -20,6 +20,11 @@ class Category(models.Model):
         default=None,
         related_name='subcategories'
     )
+    image = models.ImageField(
+        upload_to='categories',
+        blank=True,
+        null=True,
+    )
     is_published = models.BooleanField(
         default=False
     )
@@ -67,7 +72,6 @@ class Product(models.Model):
         decimal_places=2,
     )
     RATINGS = (
-        (None, 'Set you rating'),
         ('1', '1'),
         ('2', '2'),
         ('3', '3'),
@@ -78,6 +82,7 @@ class Product(models.Model):
         max_length=1,
         choices=RATINGS,
         blank=True,
+        null=True,
         default=None
     )
     brand = models.ForeignKey(
@@ -98,7 +103,17 @@ class Product(models.Model):
     )
     sizes = models.ManyToManyField(
         'cookbook.Size',
-        related_name="products"
+        related_name="products",
+    )
+    GENDERS = (
+        ('1', 'Man'),
+        ('2', 'Woman'),
+        ('3', 'Unisex'),
+    )
+    gender = models.CharField(
+        max_length=1,
+        choices=GENDERS,
+        blank=True,
     )
     date_created = models.DateField(
         auto_now_add=True,
