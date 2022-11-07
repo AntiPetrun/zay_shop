@@ -35,15 +35,18 @@ class HomeMixin(ContextMixin):
 class HomeTemplateView(HomeMixin, TemplateView):
     template_name = 'homepage/index.html'
     model = Product
-    context_object_name = 'products'
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super(HomeTemplateView, self).get_context_data()
         context.update(self.context)
-        context['categories'] = Category.objects.filter(
+        context['categories'] = Category.objects.all()
+        context['month_cats'] = Category.objects.filter(
             Q(title__iexact="watches") |
             Q(title__iexact="casual shoes") |
             Q(title__iexact="sunglass")
         )
         context['banners'] = Banner.objects.all()
+        context['products'] = Product.objects.order_by('-rating').filter(
+            rating__gte=4
+        )[:3]
         return context

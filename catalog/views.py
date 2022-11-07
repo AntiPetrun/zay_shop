@@ -1,9 +1,10 @@
 from django.shortcuts import render
 from django.http import HttpRequest
 from homepage.views import ContextMixin
-from django.views.generic import ListView
+from django.views.generic import ListView, DetailView
 from .models import Product, Category
 from cookbook.models import Brand
+from django.db.models import Q
 
 
 class GetValuesForFilters:
@@ -33,6 +34,19 @@ class ShopMixin(ContextMixin):
     context = ContextMixin.context
     context.update({
         'cat_name': 'Categories',
+    })
+
+
+class ProdCardMixin(ContextMixin):
+    context = ContextMixin.context
+    context.update({
+        'brand': 'Brand:',
+        'descr': 'Description:',
+        'color': 'Avaliable Color:',
+        'specs': 'Specification:',
+        'size': 'Size:',
+        'quant': 'Quantity:',
+        'related_prods': 'Related Products',
     })
 
 
@@ -85,6 +99,24 @@ class CategoryListView(CatalogListView):
     context_object_name = 'products'
 
     def get_queryset(self):
-        return Product.objects.filter(category=self.kwargs['cat_pk'])
+        return Product.objects.filter(is_published=True).filter(category=self.kwargs['cat_pk'])
 
 
+class ProductDetailView(ProdCardMixin, DetailView):
+    template_name = 'catalog/shop-single.html'
+    model = Product
+    context_object_name = 'product'
+    slug_url_kwarg = 'prod_slug'
+
+    def get_queryset(self):
+        return Product.objects.filter(slug=self.kwargs['prod_slug'])
+
+    def get_context_data(self, **kwargs):
+        context = super(ProductDetailView, self).get_context_data(**kwargs)
+        context.update(self.context)
+        context['products'] = Product.objects.filter(
+            is_published=True
+        ).filter(
+            Q(brand=self.kwargs['brand']) | Q(gender__exact=self.kwargs['gender'])
+        )
+        return context
