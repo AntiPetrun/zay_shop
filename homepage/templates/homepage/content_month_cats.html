@@ -10,7 +10,7 @@
             </div>
         </div>
         <div class="row">
-            {% for category in categories %}
+            {% for category in month_cats %}
             <div class="col-12 col-md-4 p-5 mt-3">
                 <a href="{% url 'catalog:cat_prods' cat_pk=category.pk %}"><img src="{{ category.image.url }}" class="rounded-circle img-fluid border"></a>
                 <h5 class="text-center mt-3 mb-3">{{ category.title }}</h5>
