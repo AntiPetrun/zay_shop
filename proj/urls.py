@@ -28,6 +28,7 @@ urlpatterns = [
     path('contact/', include('customer.urls', namespace='customer')),
     path('', include('homepage.urls', namespace='hone')),
     path('order/', include('order.urls', namespace='order')),
+    path('accounts/', include('userapp.urls', namespace='userapp')),
 ]
 
 if settings.DEBUG:
