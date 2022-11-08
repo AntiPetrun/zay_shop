@@ -1,5 +1,3 @@
-from django.shortcuts import render
-from django.http import HttpRequest
 from homepage.views import ContextMixin
 from django.views.generic import ListView, DetailView
 from .models import Product, Category
@@ -25,11 +23,6 @@ class GetValuesForFilters:
         return Product.objects.all().order_by('-price')
 
 
-def index(request: HttpRequest):
-    context = ContextMixin.context
-    return render(request, 'catalog/shop-single.html', context=context)
-
-
 class ShopMixin(ContextMixin):
     context = ContextMixin.context
     context.update({
@@ -50,13 +43,13 @@ class ProdCardMixin(ContextMixin):
     })
 
 
-class CatalogListView(ShopMixin, GetValuesForFilters, ListView):
+class ProductListView(ShopMixin, GetValuesForFilters, ListView):
     template_name = 'catalog/shop.html'
     model = Product
     context_object_name = 'products'
 
     def get_context_data(self):
-        context = super(CatalogListView, self).get_context_data()
+        context = super(ProductListView, self).get_context_data()
         context.update(self.context)
         categories = Category.objects.all()
         brands = Brand.objects.all()
@@ -64,10 +57,11 @@ class CatalogListView(ShopMixin, GetValuesForFilters, ListView):
             'categories': categories,
             'brands': brands,
         })
+        context['user_profile'] = self.request.user
         return context
 
 
-class MenCategoryListView(CatalogListView):
+class MenProductListView(ProductListView):
     template_name = 'catalog/shop.html'
     model = Product
     context_object_name = 'products'
@@ -76,7 +70,7 @@ class MenCategoryListView(CatalogListView):
         return Product.objects.filter(gender__exact='1')
 
 
-class WomenCategoryListView(CatalogListView):
+class WomenProductListView(ProductListView):
     template_name = 'catalog/shop.html'
     model = Product
     context_object_name = 'products'
@@ -85,7 +79,7 @@ class WomenCategoryListView(CatalogListView):
         return Product.objects.filter(gender__exact='2')
 
 
-class UnisexCategoryListView(CatalogListView):
+class UnisexProductListView(ProductListView):
     template_name = 'catalog/shop.html'
     model = Product
 
@@ -93,7 +87,7 @@ class UnisexCategoryListView(CatalogListView):
         return Product.objects.filter(gender__exact='3')
 
 
-class CategoryListView(CatalogListView):
+class CategoryProductListView(ProductListView):
     template_name = 'catalog/shop.html'
     model = Product
     context_object_name = 'products'
@@ -119,4 +113,5 @@ class ProductDetailView(ProdCardMixin, DetailView):
         ).filter(
             Q(brand=self.kwargs['brand']) | Q(gender__exact=self.kwargs['gender'])
         )
+        context['user_profile'] = self.request.user
         return context

@@ -2,7 +2,6 @@ from django.http import HttpRequest
 from .forms import FeedbackForm
 from homepage.views import ContextMixin
 from django.views.generic import TemplateView
-
 from catalog.models import Category
 
 
@@ -14,6 +13,7 @@ class ContactTemplateView(ContextMixin, TemplateView):
         context.update(self.context)
         context['feedback_form'] = FeedbackForm()
         context['categories'] = Category.objects.all()
+        context['user_profile'] = self.request.user
         return context
 
     def post(self, request: HttpRequest, *args, **kwargs):

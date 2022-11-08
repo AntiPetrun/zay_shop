@@ -25,4 +25,5 @@ class BrandListView(AboutMixin, ListView):
         context = super(BrandListView, self).get_context_data()
         context.update(self.context)
         context['categories'] = Category.objects.all()
+        context['user_profile'] = self.request.user
         return context

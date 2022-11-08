@@ -11,6 +11,9 @@ class ContextMixin:
         'nav_about': 'About',
         'nav_shop': 'Shop',
         'nav_contact': 'Contact',
+        'nav_signup': 'Sign In',
+        'nav_login': 'Login',
+        'nav_logout': 'Logout',
         'shop_address': 'Svobody Street, 4, Minsk',
         'shop_email': 'info@zay.com',
         'shop_phone': '+375(33)-34-34-612',
@@ -49,4 +52,5 @@ class HomeTemplateView(HomeMixin, TemplateView):
         context['products'] = Product.objects.order_by('-rating').filter(
             rating__gte=4
         )[:3]
+        context['user_profile'] = self.request.user
         return context

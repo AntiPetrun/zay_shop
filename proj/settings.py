@@ -49,6 +49,8 @@ INSTALLED_APPS += [
     'comment.apps.CommentConfig',
     'homepage.apps.HomepageConfig',
     'userapp.apps.UserappConfig',
+    'api.apps.ApiConfig',
+    'rest_framework'
 ]
 
 MIDDLEWARE = [
