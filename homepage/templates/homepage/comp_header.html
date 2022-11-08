@@ -47,6 +47,24 @@
                         <i class="fa fa-fw fa-user text-dark mr-3"></i>
                         <span class="position-absolute top-0 left-100 translate-middle badge rounded-pill bg-light text-dark">+99</span>
                     </a>
+                    <ul class="nav navbar-nav d-flex justify-content-between mx-lg-auto">
+                        {% if not user.is_authenticated %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'userapp:login' %}">{{ nav_login }}</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'userapp:signup' %}">{{ nav_signup }}</a>
+                        </li>
+                        {% endif %}
+                        {% if user.is_authenticated %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'userapp:profile' %}">Hi, {{ user_profile }}!</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'userapp:logout' %}">{{ nav_logout }}</a>
+                        </li>
+                        {% endif %}
+                    </ul>
                 </div>
             </div>
 
