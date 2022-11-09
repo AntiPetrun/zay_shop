@@ -15,9 +15,9 @@
                             <img class="card-img rounded-0 img-fluid" src="{{ product.image.url }}">
                             <div class="card-img-overlay rounded-0 product-overlay d-flex align-items-center justify-content-center">
                                 <ul class="list-unstyled">
-                                    <li><a class="btn btn-success text-white" href="{% url 'catalog:prod_card' prod_slug=product.slug brand=product.brand.pk gender=product.gender %}"><i class="far fa-heart"></i></a></li>
-                                    <li><a class="btn btn-success text-white mt-2" href="{% url 'catalog:prod_card' prod_slug=product.slug brand=product.brand.pk gender=product.gender %}"><i class="far fa-eye"></i></a></li>
-                                    <li><a class="btn btn-success text-white mt-2" href="{% url 'catalog:prod_card' prod_slug=product.slug brand=product.brand.pk gender=product.gender %}"><i class="fas fa-cart-plus"></i></a></li>
+                                    <li><a class="btn btn-success text-white" href="{{ product.get_absolute_url }}"><i class="far fa-heart"></i></a></li>
+                                    <li><a class="btn btn-success text-white mt-2" href="{{ product.get_absolute_url }}"><i class="far fa-eye"></i></a></li>
+                                    <li><a class="btn btn-success text-white mt-2" href="{{ product.get_absolute_url }}"><i class="fas fa-cart-plus"></i></a></li>
                                 </ul>
                             </div>
                         </div>

@@ -50,7 +50,8 @@ INSTALLED_APPS += [
     'homepage.apps.HomepageConfig',
     'userapp.apps.UserappConfig',
     'api.apps.ApiConfig',
-    'rest_framework'
+    'rest_framework',
+    'rest_framework.authtoken',
 ]
 
 MIDDLEWARE = [
@@ -142,3 +143,9 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 LOGOUT_REDIRECT_URL = 'userapp:login'
 LOGIN_REDIRECT_URL = 'home:home'
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+    ]
+}

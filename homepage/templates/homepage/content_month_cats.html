@@ -12,9 +12,9 @@
         <div class="row">
             {% for category in month_cats %}
             <div class="col-12 col-md-4 p-5 mt-3">
-                <a href="{% url 'catalog:cat_prods' cat_pk=category.pk %}"><img src="{{ category.image.url }}" class="rounded-circle img-fluid border"></a>
+                <a href="{{ category.get_absolute_url }}"><img src="{{ category.image.url }}" class="rounded-circle img-fluid border"></a>
                 <h5 class="text-center mt-3 mb-3">{{ category.title }}</h5>
-                <p class="text-center"><a href="{% url 'catalog:cat_prods' cat_pk=category.pk %}" class="btn btn-success">Go Shop</a></p>
+                <p class="text-center"><a href="{{ category.get_absolute_url }}" class="btn btn-success">Go Shop</a></p>
             </div>
             {% endfor %}
         </div>

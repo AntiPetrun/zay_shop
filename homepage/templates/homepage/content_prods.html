@@ -14,7 +14,7 @@
                 {% for product in products %}
                 <div class="col-12 col-md-4 mb-4">
                     <div class="card h-100">
-                        <a href="{% url 'catalog:prod_card' prod_slug=product.slug brand=product.brand.pk gender=product.gender %}">
+                        <a href="{{ product.get_absolute_url }}">
                             <img src="{{ product.image.url }}" class="card-img-top" alt="...">
                         </a>
                         <div class="card-body">
@@ -28,7 +28,7 @@
                                 </li>
                                 <li class="text-muted text-right">{{ product.price }}</li>
                             </ul>
-                            <a href="{% url 'catalog:prod_card' prod_slug=product.slug brand=product.brand.pk gender=product.gender %}" class="h2 text-decoration-none text-dark">{{ product.title }}</a>
+                            <a href="{{ product.get_absolute_url }}" class="h2 text-decoration-none text-dark">{{ product.title }}</a>
                             <p class="card-text">
                                 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sunt in culpa qui officia deserunt.
                             </p>
