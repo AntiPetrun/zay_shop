@@ -1,5 +1,4 @@
 import uuid
-
 from django.db import models
 from django.urls import reverse
 
@@ -34,7 +33,7 @@ class Category(models.Model):
 
     def get_absolute_url(self):
         return reverse(
-            'catalog:category_detail',
+            'catalog:cat_prods',
             kwargs={'cat_slug': self.slug}
         )
 
@@ -140,8 +139,8 @@ class Product(models.Model):
 
     def get_absolute_url(self):
         return reverse(
-            'catalog:product_detail',
-            kwargs={'prod_slug': self.slug}
+            'catalog:prod_card',
+            kwargs={'prod_slug': self.slug, 'brand': self.brand.id, 'gender': self.gender}
         )
 
     def __str__(self):

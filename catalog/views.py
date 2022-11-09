@@ -93,7 +93,7 @@ class CategoryProductListView(ProductListView):
     context_object_name = 'products'
 
     def get_queryset(self):
-        return Product.objects.filter(is_published=True).filter(category=self.kwargs['cat_pk'])
+        return Product.objects.filter(is_published=True).filter(category__slug=self.kwargs['cat_slug'])
 
 
 class ProductDetailView(ProdCardMixin, DetailView):
