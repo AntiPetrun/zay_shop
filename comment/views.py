@@ -1,5 +1,6 @@
-from django.shortcuts import render
 from django.http import HttpRequest, HttpResponse
+from django.views.generic import ListView
+from .models import Comment
 
 
 def index(request: HttpRequest):

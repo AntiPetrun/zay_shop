@@ -3,6 +3,7 @@ from django.views.generic import ListView, DetailView
 from .models import Product, Category
 from cookbook.models import Brand
 from django.db.models import Q
+from django.shortcuts import render
 
 
 class GetValuesForFilters:
@@ -61,30 +62,16 @@ class ProductListView(ShopMixin, GetValuesForFilters, ListView):
         return context
 
 
-class MenProductListView(ProductListView):
+class GenderProductListView(ProductListView):
     template_name = 'catalog/shop.html'
     model = Product
     context_object_name = 'products'
+    object_list = None
 
-    def get_queryset(self):
-        return Product.objects.filter(gender__exact='1')
-
-
-class WomenProductListView(ProductListView):
-    template_name = 'catalog/shop.html'
-    model = Product
-    context_object_name = 'products'
-
-    def get_queryset(self, *, object_list=None, **kwargs):
-        return Product.objects.filter(gender__exact='2')
-
-
-class UnisexProductListView(ProductListView):
-    template_name = 'catalog/shop.html'
-    model = Product
-
-    def get_queryset(self):
-        return Product.objects.filter(gender__exact='3')
+    def get(self, request, gender):
+        context = self.get_context_data()
+        context[self.context_object_name] = Product.objects.filter(gender=gender)
+        return render(request, self.template_name, context)
 
 
 class CategoryProductListView(ProductListView):
