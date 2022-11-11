@@ -1,0 +1,27 @@
+{% extends 'homepage/base.html' %}
+{% load static %}
+
+{% block content%}
+
+<table class="table">
+    <tr>
+        <td>Name</td>
+        <td>Quantity</td>
+        <td>Price</td>
+        <td>Actions</td>
+    </tr>
+    {% for item in basket.order_items.all %}
+    <tr>
+        <td>{{ item.product.title}}</td>
+        <td><input type="number" name="item_{{item.pk}}" id="" value="{{ item.quantity }}" min="0" step="1"></td>
+        <td>{{ item.price }}</td>
+        <td><a href="{% url 'order:del_from_basket' item.pk %}" class="btn btn-danger">Delete</a></td>
+    </tr>
+    {% endfor %}
+    <tr>
+        <td colspan="2">Total price</td>
+        <td>{{ basket.total_amount }}</td>
+    </tr>
+</table>
+
+{% endblock %}

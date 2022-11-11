@@ -39,7 +39,8 @@ class Basket(models.Model):
     customer = models.ForeignKey(
         User,
         on_delete=models.SET_NULL,
-        null=True
+        null=True,
+        related_name='baskets',
     )
     created_date = models.DateField(
         auto_now_add=True
@@ -51,7 +52,7 @@ class Basket(models.Model):
     @property
     def total_amount(self):
         total = 0
-        for product in self.products.all():
+        for product in self.order_items.all():
             total += product.price
         return total
 
@@ -114,14 +115,12 @@ class OrderItem(models.Model):
         related_name='order_items',
         null=True
     )
-    order = models.ForeignKey(
-        Order,
-        on_delete=models.CASCADE,
-        related_name='order_items'
-    )
-    products = models.ManyToManyField(
+    product = models.ForeignKey(
         'catalog.Product',
-        related_name='order_items'
+        on_delete=models.DO_NOTHING,
+        related_name='order_items',
+        blank=True,
+        null=True
     )
     quantity = models.PositiveSmallIntegerField(
         verbose_name='Quantity'
@@ -131,14 +130,8 @@ class OrderItem(models.Model):
         decimal_places=2,
     )
 
-    def display_products(self):
-        return ', '.join([product.title for product in self.products.all()])
-
-    display_products.short_description = 'Products'
-
     def __str__(self):
-        return f'{self.basket}: {self.order},' \
-               f'{self.quantity}, {self.price}'
+        return f'{self.basket}: {self.quantity}, {self.price}'
 
     class Meta:
         db_table = 'order_order_items'
